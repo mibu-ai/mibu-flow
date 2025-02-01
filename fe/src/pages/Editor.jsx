@@ -61,7 +61,7 @@ export default function Editor() {
 
     return (
         <div className="relative w-screen h-screen">
-            <div className='flex flex-row absolute w-full pt-2 px-2'>
+            <div className='flex flex-row absolute w-full pt-4 px-4 z-10'>
                 <HomeElement />
 
                 <div className='px-3'/>
@@ -69,20 +69,12 @@ export default function Editor() {
                 <FlowBar />
 
                 <div className='flex flex-grow justify-end'>
-                    <Automate />
+                    <Automate onClick={runComputation}/>
                 </div>
 
             </div>
 
             <Sidebar />
-
-            {/* click to run button */}
-            <button
-                onClick={runComputation}
-                className="absolute top-4 right-4 bg-blue-500 text-black px-4 py-2 rounded z-10"
-            >
-                run
-            </button>
 
             <ReactFlow
                 nodes={nodes}
