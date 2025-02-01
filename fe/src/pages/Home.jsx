@@ -1,7 +1,6 @@
 import Automate from '../components/Automate';
 import SplitText from "../components/text/SplitText";
 import GetStartedBtn from '../components/buttons/GetStartedBtn';
-
 export default function Home() {
     return (
         <div className="h-screen w-screen bg-custom-bg bg-cover bg-center flex flex-col items-center justify-center">

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ReactFlow, useNodesState, useEdgesState, addEdge, Background } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -6,6 +6,7 @@ import Sidebar from '../components/Sidebar';
 import Automate from '../components/Automate';
 import HomeElement from '../components/HomeElement';
 import FlowBar from '../components/FlowBar';
+import Footer from '../components/Footer';
 
 import InputText from '../components/nodes/input/InputText';
 import ProcessTextConcat from '../components/nodes/process/ProcessTextConcat';
@@ -87,6 +88,8 @@ export default function Editor() {
             >
                 <Background variant="dots" gap={12} size={1} />
             </ReactFlow>
+            <Footer/>
+
         </div>
     );
 }

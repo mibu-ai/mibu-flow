@@ -7,8 +7,8 @@ export default {
     theme: {
         extend: {
             colors: {
-                'border-gray': '#D2D2D2',
                 'custom-blue': '#6A94FF',
+                'custom-border': '#E6E6E6',
             },
             fontFamily: {
                 poppins: ['Poppins', 'sans-serif'],
