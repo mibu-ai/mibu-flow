@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { ReactFlow, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
+import { ReactFlow, useNodesState, useEdgesState, addEdge, Background } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { Sidebar } from '../components/Sidebar';
@@ -30,7 +30,9 @@ export default function Editor() {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 style={{ width: '100%', height: '100%' }}
-            />
+            >
+                <Background variant="dots" gap={12} size={1} />
+            </ReactFlow>
         </div>
     );
 }
