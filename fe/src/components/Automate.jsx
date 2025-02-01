@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import RunBtn from "./buttons/RunBtn";
 import SignInBtn from "./buttons/SignInBtn";
 
@@ -17,6 +18,10 @@ const Automate = ({ onClick }) => {
             </div>
         </>
     );
+};
+
+Automate.propTypes = {
+    onClick: PropTypes.func.isRequired,
 };
 
 export default Automate;
