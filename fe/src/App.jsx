@@ -1,8 +1,8 @@
-import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from './pages/Home';
 import Editor from './pages/Editor';
+import Test from './pages/Test';
 
 function App() {
     return (
@@ -11,6 +11,7 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path="edit" element={<Editor />} />
                 <Route path="*" element={<Home />} />
+                <Route path="test" element={<Test />} />
             </Routes>
         </BrowserRouter>
     )
