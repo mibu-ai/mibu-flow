@@ -1,6 +1,6 @@
 import Automate from '../components/Automate';
-import SplitText from "../components/SplitText";
-import GetStartedBtn from '../components/GetStartedBtn';
+import SplitText from "../components/text/SplitText";
+import GetStartedBtn from '../components/buttons/GetStartedBtn';
 
 export default function Home() {
     return (

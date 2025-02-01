@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import RunBtn from "./RunBtn";
-import SignInBtn from "./SignInBtn";
+import RunBtn from "./buttons/RunBtn";
+import SignInBtn from "./buttons/SignInBtn";
 
 const Automate = () => {
     const [isSignedInPage, setIsSignedInPage] = useState(false);
