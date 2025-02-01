@@ -3,6 +3,9 @@ import { ReactFlow, useNodesState, useEdgesState, addEdge, Background } from '@x
 import '@xyflow/react/dist/style.css';
 
 import Sidebar from '../components/Sidebar';
+import Automate from '../components/Automate';
+import HomeElement from '../components/HomeElement';
+import FlowBar from '../components/FlowBar';
 
 import InputText from '../components/nodes/input/InputText';
 import ProcessTextConcat from '../components/nodes/process/ProcessTextConcat';
@@ -10,9 +13,9 @@ import OutputText from '../components/nodes/output/OutputText';
 
 const initialNodes = [
     { id: 'in-1', type: 'inputText', position: { x: 100, y: 100 }, data: { text: '' } },
-    { id: 'in-2', type: 'inputText', position: { x: 100, y: 200 }, data: { text: '' } },
-    { id: 'proc-1', type: 'processTextConcat', position: { x: 300, y: 150 }, data: { run: false } },
-    { id: 'out-1', type: 'outputText', position: { x: 500, y: 150 }, data: { output: '' } },
+    { id: 'in-2', type: 'inputText', position: { x: 100, y: 300 }, data: { text: '' } },
+    { id: 'proc-1', type: 'processTextConcat', position: { x: 500, y: 150 }, data: { run: false } },
+    { id: 'out-1', type: 'outputText', position: { x: 900, y: 150 }, data: { output: '' } },
 ];
 
 const initialEdges = [
@@ -58,6 +61,19 @@ export default function Editor() {
 
     return (
         <div className="relative w-screen h-screen">
+            <div className='flex flex-row absolute w-full pt-2 px-2'>
+                <HomeElement />
+
+                <div className='px-3'/>
+
+                <FlowBar />
+
+                <div className='flex flex-grow justify-end'>
+                    <Automate />
+                </div>
+
+            </div>
+
             <Sidebar />
 
             {/* click to run button */}
