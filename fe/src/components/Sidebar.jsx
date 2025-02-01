@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
-export function Sidebar() {
+export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
