@@ -9,8 +9,8 @@ from mibu_flow_be.lib.logger import logger
 from mibu_flow_be.utils.initialize import run_init
 
 FILENAME = "statement.pdf"
-ASSISTANT_ID = "assistant_abc123"
-THREAD_ID = "thread_abc123"
+ASSISTANT_ID = "asst_0CWOX0xJEixMQQjIt5WkxyHv"
+THREAD_ID = "thread_1J2fUIxjWntDnOSm4LcYJSFO"
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
     message_file = client.files.create(file=open(FILENAME, "rb"), purpose="assistants")
 
     # Create message
-    message = add_to_thread(
+    message_id = add_to_thread(
         thread_id=THREAD_ID,
         message="Output the itemized transactions in CSV format by reading the uploaded personal bank statement PDF",
         message_file_id=message_file.id,
@@ -43,7 +43,7 @@ def main():
 
     # Delete message
     deleted_message = client.beta.threads.messages.delete(
-        message_id=message.id,
+        message_id=message_id,
         thread_id=THREAD_ID,
     )
     logger.debug("Deleted message: %s", deleted_message.id)

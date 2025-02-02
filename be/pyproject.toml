@@ -17,7 +17,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "requests", 
+    "requests",
+    "python-dotenv",
+    "openai"
 ]
 
 [project.optional-dependencies]

@@ -32,12 +32,9 @@ def create_assistant() -> str:
     return assistant.id
 
 
-def create_thread(message_file_id: str) -> str:
+def create_thread() -> str:
     """
     Create a thread with the message "Output the itemized transactions in CSV format by reading the uploaded personal bank statement PDF".
-
-    Args:
-        message_file_id (str): The ID of the uploaded file
 
     Returns:
         str: The ID of the created thread
