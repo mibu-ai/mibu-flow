@@ -1,12 +1,23 @@
 import PropTypes from 'prop-types';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+const handleCLick = () => {
+    toast.info('Run button clicked!', { autoClose: 1000 });
+};
 
 const RunBtn = ({ onClick }) => {
     return (
         <div 
             className="hover:cursor-pointer text-white bg-custom-blue active:opacity-[80%] font-poppins w-32 h-10 rounded-2xl font-semibold border-2 border-custom-border flex items-center justify-center shadow-lg select-none"
-            onClick={onClick}
+            onClick={(e) => {
+                handleCLick();
+                onClick(e);
+            }}
         >
             <h2>Run（︶^︶）</h2>
+            <ToastContainer/>
+
         </div>
     );
 };

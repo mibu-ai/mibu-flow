@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import RunBtn from "./buttons/RunBtn";
 import SignInBtn from "./buttons/SignInBtn";
 import SignUpBtn from "./buttons/SignUpBtn";
+
 const Automate = ({ onClick }) => {
     const [isSignedInPage, setIsSignedInPage] = useState(false);
     useEffect(() => {

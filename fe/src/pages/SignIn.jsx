@@ -13,7 +13,7 @@ const SignIn = () => {
         const userJson = usersData?.users.find(user => user.username === username && user.password === password);
         const user = storedUsersData?.users.find(user => user.username === username && user.password === password);
         if (user || userJson) {
-            toast.info('Sign in successful!');
+            toast.info('Sign in successful!', { autoClose: 2000 });
             setTimeout(() => {
                 window.location.href = '/edit';
             }, 2000);

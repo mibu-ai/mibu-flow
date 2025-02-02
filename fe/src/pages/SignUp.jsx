@@ -14,7 +14,7 @@ const SignUp = () => {
         const userExists = usersData.users.find(user => user.username === username);
         if (userExists) {
             setError('Username already exists');
-            toast.info('User already exists');
+            toast.info('User already exists', { autoClose: 2000 });
 
             
             setTimeout(() => {
