@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { ReactFlow, useNodesState, useEdgesState, addEdge, Background, useReactFlow, ReactFlowProvider, Controls } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -18,8 +18,8 @@ const initialNodes = [
     { id: 'in-1', type: 'inputText', position: { x: 100, y: 100 }, data: {} },
     { id: 'in-2', type: 'inputText', position: { x: 100, y: 300 }, data: {} },
     { id: 'in-3', type: 'inputText', position: { x: 100, y: 500 }, data: {} },
-    { id: 'proc-1', type: 'processTextConcat', position: { x: 500, y: 150 }, data: { run: false, done: false } },
-    { id: 'proc-2', type: 'processTextConcat', position: { x: 500, y: 500 }, data: { run: false, done: false } },
+    { id: 'proc-1', type: 'processTextConcat', position: { x: 500, y: 150 }, data: { run: false } },
+    { id: 'proc-2', type: 'processTextConcat', position: { x: 500, y: 500 }, data: { run: false } },
     { id: 'out-1', type: 'outputText', position: { x: 900, y: 150 }, data: {} },
 ];
 
@@ -27,10 +27,10 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const initialEdges = [
-    { id: 'e1-3', source: 'in-1', targetHandle: 'a', target: 'proc-1' },
-    { id: 'e2-3', source: 'in-2', targetHandle: 'b', target: 'proc-1' },
-    { id: 'e23-3', source: 'proc-1', target: 'proc-2' },
-    { id: 'e3-4', source: 'proc-2', target: 'out-1' },
+    { id: 'e1-3', source: 'in-1', targetHandle: 'a', target: 'proc-1', data: { done: false } },
+    { id: 'e2-3', source: 'in-2', targetHandle: 'b', target: 'proc-1', data: { done: false } },
+    { id: 'e23-3', source: 'proc-1', target: 'proc-2', data: { done: false } },
+    { id: 'e3-4', source: 'proc-2', target: 'out-1', data: { done: false } },
 ];
 
 const nodeTypes = {
@@ -46,7 +46,20 @@ function EditorChild() {
     const { screenToFlowPosition } = useReactFlow();
     const [type] = useDnD();
 
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+    useEffect(() => {
+        console.log('Edges:', edges);
+    }, [edges]);
+
+    const onConnect = useCallback((params) => {
+        setEdges((eds) => {
+            const sourceNode = nodes.find(node => node.id === params.source);
+            const newEdge = {
+                ...params,
+                data: { ...params.data, ...sourceNode?.data },
+            };
+            return addEdge(newEdge, eds);
+        });
+    }, [setEdges, nodes]);
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
