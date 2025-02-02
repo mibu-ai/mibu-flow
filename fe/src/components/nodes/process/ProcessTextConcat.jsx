@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Handle, Position, useReactFlow, useNodeConnections, useHandleConnections, useNodesData } from '@xyflow/react';
-import { use } from 'react';
 
 const ProcessTextConcat = ({ id, data }) => {
     const { updateNodeData } = useReactFlow();
