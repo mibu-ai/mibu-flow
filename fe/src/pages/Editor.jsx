@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { ReactFlow, useNodesState, useEdgesState, addEdge, Background, useReactFlow, ReactFlowProvider, Controls } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -14,7 +14,7 @@ import ProcessTextConcat from '../components/nodes/process/ProcessTextConcat';
 import OutputText from '../components/nodes/output/OutputText';
 
 // run: ready for the process to run, done: process has finished running.
-const initialNodes = [
+const initialNodes = JSON.parse(localStorage.getItem('initialNodes')) || [
     { id: 'in-1', type: 'inputText', position: { x: 100, y: 100 }, data: {} },
     { id: 'in-2', type: 'inputText', position: { x: 100, y: 300 }, data: {} },
     { id: 'in-3', type: 'inputText', position: { x: 100, y: 500 }, data: {} },
@@ -23,15 +23,19 @@ const initialNodes = [
     { id: 'out-1', type: 'outputText', position: { x: 900, y: 150 }, data: {} },
 ];
 
-let id = 0;
-const getId = () => `dndnode_${id++}`;
-
-const initialEdges = [
+const initialEdges = JSON.parse(localStorage.getItem('initialEdges')) || [
     { id: 'e1-3', source: 'in-1', targetHandle: 'a', target: 'proc-1' },
     { id: 'e2-3', source: 'in-2', targetHandle: 'b', target: 'proc-1' },
     { id: 'e23-3', source: 'proc-1', target: 'proc-2' },
     { id: 'e3-4', source: 'proc-2', target: 'out-1' },
 ];
+
+// save initial nodes and edges to local storage
+localStorage.setItem('initialNodes', JSON.stringify(initialNodes));
+localStorage.setItem('initialEdges', JSON.stringify(initialEdges));
+
+let id = 0;
+const getId = () => `dndnode_${id++}`;
 
 const nodeTypes = {
     inputText: InputText,
@@ -95,6 +99,14 @@ function EditorChild() {
             })
         );
     };
+
+    useEffect(() => {
+        localStorage.setItem('initialNodes', JSON.stringify(nodes));
+    }, [nodes]);
+
+    useEffect(() => {
+        localStorage.setItem('initialEdges', JSON.stringify(edges));
+    }, [edges]);
 
     return (
         <div className="relative w-screen h-screen">
