@@ -1,30 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { Handle, Position, useReactFlow } from '@xyflow/react';
+import { Handle, Position, useReactFlow, useNodeConnections, useHandleConnections, useNodesData } from '@xyflow/react';
+import { use } from 'react';
 
 const ProcessTextConcat = ({ id, data }) => {
     const { updateNodeData } = useReactFlow();
-    const { getNode, getEdges } = useReactFlow();
-    const [inputTexts, setInputTexts] = useState([]);
-    const [outputText, setOutputText] = useState('');
+    const connections = useHandleConnections({
+        type: 'target',
+    });
+    const nodesData = useNodesData((connections || []).map((c) => c.source));
 
     useEffect(() => {
-        if (data.run) {
-            const incomingEdges = getEdges().filter((edge) => edge.target === id);
-            const connectedNodes = incomingEdges.map((edge) => getNode(edge.source));
+        const allDone = nodesData.every((node) => node.data.done);
+        if (!allDone) return;
 
-            const newInputTexts = connectedNodes.map((node) => node.data.text || '');
-            setInputTexts(newInputTexts);
-            setOutputText(newInputTexts.join(' '));
-            updateNodeData(id, { run: false, text: newInputTexts.join(' ') });
+        if (connections.length && data.run) {
+            console.log('process id', id, ' is running: ', data.run);
+            const inputTexts = nodesData.map((node) => node.data.text);
+            const outputText = inputTexts.join('');
+
+            updateNodeData(id, { run: false, text: outputText, done: true });
+
+            setTimeout(() => {
+                updateNodeData(id, { run: false, text: outputText, done: false });
+            }, 200);
         }
-    }, [data.run]);
+    }, [data.run, nodesData]); 
 
     return (
         <div className="p-4 bg-gray-100 border rounded shadow">
             <div className="font-bold">Process Text Concat Node</div>
-            <p className="mt-2">Inputs: {inputTexts.join(' + ')}</p>
-            <p className="font-bold">Output: {outputText}</p>
-            <Handle type="target" position={Position.Left} />
+            <p className="font-bold">Output: {data.text}</p>
+            <Handle id="a" type="target" position={Position.Left} style={{ top: '30%', transform: 'translateY(-50%)' }}/>
+            <Handle id="b" type="target" position={Position.Left} style={{ top: '70%', transform: 'translateY(-50%)' }}/>
             <Handle type="source" position={Position.Right} />
         </div>
     );
