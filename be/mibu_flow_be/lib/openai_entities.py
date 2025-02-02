@@ -3,10 +3,11 @@ OpenAI Client Instance
 """
 
 import os
+import re
 from dotenv import load_dotenv
 from openai import OpenAI
 from mibu_flow_be.lib.logger import logger
-from mibu_flow_be.constants import ASSISTANT_ID, THREAD_ID, FILE_NAME
+from mibu_flow_be.constants import ASSISTANT_ID, THREAD_ID
 
 __all__ = ["client"]
 
@@ -89,6 +90,7 @@ def run_thread(thread_id: str, assistant_id: str) -> str:
     Return:
         str: The result of the thread
     """
+    logger.info("Running thread %s with assistant %s", thread_id, assistant_id)
 
     # Get thread by id
     thread = client.beta.threads.retrieve(thread_id)
@@ -118,16 +120,19 @@ def run_thread(thread_id: str, assistant_id: str) -> str:
             result += message_content.value
             result += "\n".join(citations)
 
+    logger.debug("Thread completed")
+
     return result
 
 
-def parse_file(file_path: str) -> str:
+def parse_file_to_cache(file_path: str, job_id: str, results_cache: dict) -> str:
+    results_cache[job_id] = {"status": "running"}
 
     logger.debug(
-        "Using resources:\n- assistant: %s\n- thread: %s\n- statement: %s",
+        "Using resources:\n- assistant: %s\n- thread: %s\n- file_path: %s",
         ASSISTANT_ID,
         THREAD_ID,
-        FILE_NAME,
+        file_path,
     )
 
     # Create file
@@ -140,7 +145,12 @@ def parse_file(file_path: str) -> str:
         message_file_id=message_file.id,
     )
 
-    result = run_thread(THREAD_ID, ASSISTANT_ID)
+    try:
+        result = run_thread(THREAD_ID, ASSISTANT_ID)
+    except Exception as e:
+        logger.error("Error running thread: %s", e)
+        results_cache[job_id] = {"status": "error", "payload": str(e)}
+        return str(e)
 
     # Delete file
     deleted_file = client.files.delete(message_file.id)
@@ -153,4 +163,13 @@ def parse_file(file_path: str) -> str:
     )
     logger.debug("Deleted message: %s", deleted_message.id)
 
-    return result
+    # Use regex to extract only the CSV part
+    pattern = r"```csv(.*?)```"
+    matches = re.findall(
+        pattern, result, re.DOTALL
+    )  # Use re.DOTALL to allow the dot (.) to match newline characters
+    if matches:
+        result = matches[0].strip()  # Use strip() to remove leading/trailing whitespace
+
+    # Store in results_cache
+    results_cache[job_id] = {"status": "completed", "payload": result}
