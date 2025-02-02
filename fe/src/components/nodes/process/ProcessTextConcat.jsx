@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Handle, Position, useReactFlow, useNodeConnections, useNodesData, useEdgesState } from '@xyflow/react';
+import { Handle, Position, useReactFlow, useNodeConnections, useNodesData, useEdgesState, useHandleConnections } from '@xyflow/react';
 
 const ProcessTextConcat = ({ id, data }) => {
+    const connections = useHandleConnections({
+        type: 'target',
+    });
+    const nodesData = useNodesData((connections || []).map((c) => c.source));
+
     const [text, setText] = useState('');
     const { getNodes, updateNodeData, getEdges, updateEdgeData, setEdges, updateEdge } = useReactFlow();
     const nodes = getNodes();
@@ -9,19 +14,10 @@ const ProcessTextConcat = ({ id, data }) => {
     const outEdges = getEdges().filter(edge => edge.source === id);
 
     useEffect(() => {
-        console.log('ProcessTextConcat was triggered as a result of edge change', id, data);
-    }, [inEdges]);
-
-    useEffect(() => {
-        console.log('ProcessTextConcat', id, data, { inEdges });
-
         const allDone = inEdges.every((edge) => edge?.data?.done);
-        console.log('allDone', allDone, { inEdges });
         if (!allDone) return;
 
         if (inEdges.length && data.run) {
-            console.log('process id', id, ' is running: ', data.run);
-
             // set all incoming nodes done to false
             inEdges.map(edge => {
                 // find the node with the id to be == edge.source
@@ -36,22 +32,15 @@ const ProcessTextConcat = ({ id, data }) => {
             updateNodeData(id, { run: false, text: text });
 
             outEdges.map(edge => {
-                console.log('updating edge', edge.id, 'with text', text);
-
-                // updateEdgeData(edge.id, { text: text, done: true });
-
                 updateEdge(edge.id, {
                     ...edge,
                     data: { ...edge.data, text: text, done: true },
                 });
             });
 
-            // print the fixed edge
-            console.log('fixed edge', getEdges().find(edge => edge.source === id));
-
             setText(text);
         }
-    }, [data.run, inEdges]); 
+    }, [data.run, nodesData]); 
 
     return (
         <div className="p-4 bg-gray-100 border rounded shadow">
