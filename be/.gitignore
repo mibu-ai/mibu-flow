@@ -1,5 +1,7 @@
+output.txt
+
 *.egg-info
 *.env
-output.txt
 *.pyc
 __pycache__
+.DS_Store

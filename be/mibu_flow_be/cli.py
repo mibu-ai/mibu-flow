@@ -8,9 +8,11 @@ from mibu_flow_be.lib.openai_entities import client, add_to_thread
 from mibu_flow_be.lib.logger import logger
 from mibu_flow_be.utils.initialize import run_init
 
-FILENAME = "statements/statement3.pdf"
-ASSISTANT_ID = "asst_A3cCpIgrypZGoSm5cSdEfEX7"
+FILENAME = "statements/statement2.pdf"
 THREAD_ID = "thread_088CzAkYwh5Ly6XGVsuaYafs"
+# ASSISTANT_ID = "asst_A3cCpIgrypZGoSm5cSdEfEX7" # gpt-4-turbo
+# ASSISTANT_ID = "asst_glVoUwCSqztIYofd7M2ABLXJ" # gpt-4o
+ASSISTANT_ID = "asst_dvbIGLwtP08WRvSK43edEctl"  # gpt-4o-mini
 
 
 def main():
