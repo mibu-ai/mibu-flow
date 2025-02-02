@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Handle, Position, useReactFlow, useNodeConnections, useNodesData, useHandleConnections } from '@xyflow/react';
+import { Handle, Position, useReactFlow, useNodeConnections, useNodesData } from '@xyflow/react';
 import { use } from 'react';
 
 const OutputText = ({ id, data }) => {
-    const connections = useHandleConnections({
+    const connections = useNodeConnections({
         type: 'target',
     });
     const nodesData = useNodesData((connections || []).map((c) => c.source));
