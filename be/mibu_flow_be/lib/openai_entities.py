@@ -5,6 +5,8 @@ OpenAI Client Instance
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+from mibu_flow_be.lib.logger import logger
+from mibu_flow_be.constants import ASSISTANT_ID, THREAD_ID, FILE_NAME
 
 __all__ = ["client"]
 
@@ -77,3 +79,78 @@ def add_to_thread(message: str, thread_id: str, message_file_id: str) -> str:
     )
 
     return message.id
+
+
+def run_thread(thread_id: str, assistant_id: str) -> str:
+    """
+    Run the thread and poll the status of the run until it's in a terminal state.
+    Do this after adding a message to the thread.
+
+    Return:
+        str: The result of the thread
+    """
+
+    # Get thread by id
+    thread = client.beta.threads.retrieve(thread_id)
+
+    # Use the create and poll SDK helper to create a run and poll the status of
+    # the run until it's in a terminal state.
+    run = client.beta.threads.runs.create_and_poll(
+        thread_id=thread.id, assistant_id=assistant_id
+    )
+
+    messages = list(
+        client.beta.threads.messages.list(thread_id=thread.id, run_id=run.id)
+    )
+
+    message_content = messages[0].content[0].text
+    annotations = message_content.annotations
+    citations = []
+    result = ""
+    for index, annotation in enumerate(annotations):
+        message_content.value = message_content.value.replace(
+            annotation.text, f"[{index}]"
+        )
+        if file_citation := getattr(annotation, "file_citation", None):
+            cited_file = client.files.retrieve(file_citation.file_id)
+            citations.append(f"[{index}] {cited_file.filename}")
+
+            result += message_content.value
+            result += "\n".join(citations)
+
+    return result
+
+
+def parse_file(file_path: str) -> str:
+
+    logger.debug(
+        "Using resources:\n- assistant: %s\n- thread: %s\n- statement: %s",
+        ASSISTANT_ID,
+        THREAD_ID,
+        FILE_NAME,
+    )
+
+    # Create file
+    message_file = client.files.create(file=open(file_path, "rb"), purpose="assistants")
+
+    # Create message
+    message_id = add_to_thread(
+        thread_id=THREAD_ID,
+        message="Output the itemized transactions in CSV format by reading the uploaded personal bank statement PDF",
+        message_file_id=message_file.id,
+    )
+
+    result = run_thread(THREAD_ID, ASSISTANT_ID)
+
+    # Delete file
+    deleted_file = client.files.delete(message_file.id)
+    logger.debug("Deleted file: %s", deleted_file.id)
+
+    # Delete message
+    deleted_message = client.beta.threads.messages.delete(
+        message_id=message_id,
+        thread_id=THREAD_ID,
+    )
+    logger.debug("Deleted message: %s", deleted_message.id)
+
+    return result
