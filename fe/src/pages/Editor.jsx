@@ -24,15 +24,16 @@ const initialNodes = [
     { id: 'out-1', type: 'outputText', position: { x: 900, y: 150 }, data: {} },
 ];
 
-const initialEdges = [
-    { id: 'e1-3', source: 'in-1', targetHandle: 'a', target: 'proc-1'},
-    { id: 'e2-3', source: 'in-2', targetHandle: 'b', target: 'proc-1'},
-    { id: 'e23-3', source: 'proc-1', target: 'proc-2'},
-    { id: 'e3-4', source: 'proc-2', target: 'out-1'},
-];
-
 let id = 0;
 const getId = () => `dndnode_${id++}`;
+
+const initialEdges = [
+    { id: 'e1-3', source: 'in-1', targetHandle: 'a', target: 'proc-1', data: { done: false } },
+    { id: 'e2-3', source: 'in-2', targetHandle: 'b', target: 'proc-1', data: { done: false } },
+    { id: 'e23-3', source: 'proc-1', target: 'proc-2', data: { done: false } },
+    { id: 'e3-4', source: 'proc-2', target: 'out-1', data: { done: false } },
+];
+
 
 const nodeTypes = {
     inputText: InputText,
@@ -48,7 +49,20 @@ function EditorChild() {
     const { screenToFlowPosition } = useReactFlow();
     const [type] = useDnD();
 
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, markerEnd: { type: 'arrow' } }, eds)), [setEdges]);
+    useEffect(() => {
+        console.log('Edges:', edges);
+    }, [edges]);
+
+    const onConnect = useCallback((params) => {
+        setEdges((eds) => {
+            const sourceNode = nodes.find(node => node.id === params.source);
+            const newEdge = {
+                ...params,
+                data: { ...params.data, ...sourceNode?.data, markerEnd: { type: 'arrow' } },
+            };
+            return addEdge(newEdge, eds);
+        });
+    }, [setEdges, nodes]);
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();

@@ -3,18 +3,22 @@ import { Handle, Position, useReactFlow, useNodeConnections, useHandleConnection
 import { use } from 'react';
 
 const OutputText = ({ id, data }) => {
-    const { updateNodeData } = useReactFlow();
-    const connections = useHandleConnections({
+    const connections = useNodeConnections({
         type: 'target',
     });
-    const nodesData = useNodesData(connections[0]?.source || []);
+    const nodesData = useNodesData((connections || []).map((c) => c.source));
+    const { updateNodeData, getEdges, updateEdgeData } = useReactFlow();
+    const inEdges = getEdges().filter(edge => edge.target === id);
 
     useEffect(() => {
-        if (connections.length) {
-            const inputTexts = nodesData.data.text;
+        if (inEdges.length) {
+            const inputTexts = inEdges[0].data.text;
+
+            // console.log('Input Texts:', inputTexts);
+
             updateNodeData(id, { text: inputTexts });
         }
-    }, [connections, nodesData]);
+    }, [inEdges, nodesData]);
 
     return (
         <div className="p-4 bg-blue-100 border rounded shadow">

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Handle, Position, useReactFlow, useNodeConnections, useHandleConnections, useNodesData } from '@xyflow/react';
+import { Handle, Position, useReactFlow, useNodeConnections, useNodesData, useEdgesState } from '@xyflow/react';
 
+// hi
 const ProcessTextConcat = ({ id, data }) => {
-    const { updateNodeData } = useReactFlow();
-    const connections = useHandleConnections({
+    const connections = useNodeConnections({
         type: 'target',
     });
     const nodesData = useNodesData((connections || []).map((c) => c.source));
