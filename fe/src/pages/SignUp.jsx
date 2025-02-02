@@ -1,26 +1,35 @@
 import { useState } from 'react';
 import usersData from '../data/users.json';
 
-const SignIn = () => {
+const SignUp = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const handleSignIn = (e) => {
+
+    const handleSignUp = (e) => {
+
         e.preventDefault();
-        const storedUsersData = JSON.parse(localStorage.getItem('usersData'));
-        const userJson = usersData?.users.find(user => user.username === username && user.password === password);
-        const user = storedUsersData?.users.find(user => user.username === username && user.password === password);
-        if (user || userJson) {
-            alert('Sign in successful!');
-            window.location.href = '/edit';
+        const userExists = usersData.users.find(user => user.username === username);
+        if (userExists) {
+            setError('Username already exists');
+            window.location.href = '/signin';
         } else {
-            setError('Invalid username or password');
+            const newUser = { username, password };
+            usersData.users.push(newUser);
+            // Assuming you have a function to save the updated usersData to the JSON file
+            saveUsersData(usersData);
+            alert('User created successfully!');
+            window.location.href = '/signin';
         }
+    };
+
+    const saveUsersData = (data) => {
+        localStorage.setItem('usersData', JSON.stringify(data));
     };
 
     return (
         <div className='w-screen h-screen flex items-center justify-center bg-custom-bg bg-cover bg-center '>
-            <form onSubmit={handleSignIn} className='top-[230px] flex flex-col gap-4 left-[330px] absolute font-harabara text-custom-blue text-[24px]' >
+            <form onSubmit={handleSignUp} className='top-[230px] flex flex-col gap-4 left-[330px] absolute font-harabara text-custom-blue text-[24px]' >
                 <div className='flex gap-4'>
                     <label>Username:</label>
                     <input 
@@ -42,10 +51,10 @@ const SignIn = () => {
                     />
                 </div>
                 {error && <p style={{color: 'red'}}>{error}</p>}
-                <button className="border border-2 border-custom-blue rounded-xl" type="submit">Sign In</button>
+                <button className="border border-2 border-custom-blue rounded-xl" type="submit">Sign Up</button>
             </form>
         </div>
     );
 };
 
-export default SignIn;
+export default SignUp;

@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import Editor from './pages/Editor';
 import Test from './pages/Test';
 import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+
 function App() {
     return (
         <BrowserRouter>
@@ -13,6 +15,7 @@ function App() {
                 <Route path="*" element={<Home />} />
                 <Route path="test" element={<Test />} />
                 <Route path="/signin" element={<SignIn />}/>
+                <Route path="/signup" element={<SignUp />}/>
             </Routes>
         </BrowserRouter>
     )
