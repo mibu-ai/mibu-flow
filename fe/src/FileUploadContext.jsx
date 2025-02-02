@@ -9,9 +9,19 @@ export function FileUploadProvider({ children }) {
   const parseFile = useCallback(async () => {
     if (file) {
       const res = await uploadFile(file);
-      console.log(res);
+      downloadTxtFile(res);
     }
   }, [file]);
+
+  const downloadTxtFile = (text) => {
+    const element = document.createElement("a");
+    const file = new Blob([text], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = "response.txt";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
 
   return (
     <FileUploadContext.Provider value={{ setFile, parseFile }}>

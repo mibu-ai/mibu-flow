@@ -5,6 +5,7 @@ import Editor from './pages/Editor';
 import Test from './pages/Test';
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import Dashboard from "./pages/Dashboard";
 import { FileUploadProvider } from "./FileUploadContext"; // Adjust path as necessary
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="test" element={<Test />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
     </FileUploadProvider>

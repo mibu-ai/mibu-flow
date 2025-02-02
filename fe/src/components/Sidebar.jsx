@@ -29,6 +29,8 @@ export default function Sidebar() {
         { title: 'Text Concatenation Node', var_name: 'processTextConcat' },
         { title: 'Output Node', var_name: 'outputText' },
         { title: 'Bank File Node', var_name: 'fileInput' },
+        { title: 'AI Node', var_name: 'ai' },
+        { title: 'Save Text Node', var_name: 'saveTxt' },
     ];
 
     return (

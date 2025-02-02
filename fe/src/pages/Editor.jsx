@@ -13,12 +13,12 @@ import InputText from '../components/nodes/input/InputText';
 import ProcessTextConcat from '../components/nodes/process/ProcessTextConcat';
 import OutputText from '../components/nodes/output/OutputText';
 import BankFile from '../components/nodes/input/BankFIle';
-
+import Ai from '../components/nodes/process/Ai';
+import SaveTxt from '../components/nodes/output/SaveTxt';
 // run: ready for the process to run, done: process has finished running.
 const initialNodes = [
     { id: 'in-1', type: 'inputText', position: { x: 100, y: 100 }, data: {} },
     { id: 'in-2', type: 'inputText', position: { x: 100, y: 300 }, data: {} },
-    { id: 'in-3', type: 'inputText', position: { x: 100, y: 500 }, data: {} },
     { id: 'proc-1', type: 'processTextConcat', position: { x: 500, y: 150 }, data: { run: false, done: false } },
     { id: 'proc-2', type: 'processTextConcat', position: { x: 500, y: 500 }, data: { run: false, done: false } },
     { id: 'out-1', type: 'outputText', position: { x: 900, y: 150 }, data: {} },
@@ -40,6 +40,8 @@ const nodeTypes = {
     processTextConcat: ProcessTextConcat,
     outputText: OutputText,
     fileInput: BankFile,
+    ai: Ai,
+    saveTxt: SaveTxt,
 };
 
 function EditorChild() {
@@ -94,7 +96,7 @@ function EditorChild() {
 
             setNodes((nds) => nds.concat(newNode));
         },
-        [screenToFlowPosition, type],
+        [screenToFlowPosition, setNodes, type],
     );
 
     const runComputation = () => {
