@@ -4,60 +4,36 @@ mibu-flow: OpenAI-based file parser
 """
 
 import argparse
-from mibu_flow_be.lib.openai_entities import client, add_to_thread
-from mibu_flow_be.lib.logger import logger
+from mibu_flow_be.lib.api import run_up
 from mibu_flow_be.utils.initialize import run_init
-
-FILENAME = "statements/statement2.pdf"
-THREAD_ID = "thread_088CzAkYwh5Ly6XGVsuaYafs"
-# ASSISTANT_ID = "asst_A3cCpIgrypZGoSm5cSdEfEX7" # gpt-4-turbo
-# ASSISTANT_ID = "asst_glVoUwCSqztIYofd7M2ABLXJ" # gpt-4o
-ASSISTANT_ID = "asst_dvbIGLwtP08WRvSK43edEctl"  # gpt-4o-mini
 
 
 def main():
-    # Set up argument parser
     parser = argparse.ArgumentParser(description="Mibu Flow Backend CLI")
-    parser.add_argument(
-        "command", type=str, help="Command to run", nargs="?", default=None
-    )
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    parser_init = subparsers.add_parser("init", help="Initialize assistant and thread")
+    # parser_install.add_argument("model-name", help="Name of the model to use for the assistant")
+    parser_init.set_defaults(func=run_init)
+
+    # parser_up = subparsers.add_parser("up", help="Start the mibu-flow backend")
+    # parser_install.add_argument("model-name", help="Name of the model to use for the assistant")
+    # parser_up.set_defaults(func=run_up)
+
     args = parser.parse_args()
 
-    if args.command == "init":
-        run_init()
-        return
+    # Call the function associated with the subcommand
+    if hasattr(args, "func"):
+        args.func(args)
+    else:
+        run_up()
+        # parser.print_help()
 
-    logger.debug(
-        "Using resources:\n- assistant: %s\n- thread: %s\n- statement: %s",
-        ASSISTANT_ID,
-        THREAD_ID,
-        FILENAME,
-    )
+    return  # return early
 
-    # Create file
-    message_file = client.files.create(file=open(FILENAME, "rb"), purpose="assistants")
-
-    # Create message
-    message_id = add_to_thread(
-        thread_id=THREAD_ID,
-        message="Output the itemized transactions in CSV format by reading the uploaded personal bank statement PDF",
-        message_file_id=message_file.id,
-    )
-
-    run_thread()
-
-    # Delete file
-    deleted_file = client.files.delete(message_file.id)
-    logger.debug("Deleted file: %s", deleted_file.id)
-
-    # Delete message
-    deleted_message = client.beta.threads.messages.delete(
-        message_id=message_id,
-        thread_id=THREAD_ID,
-    )
-    logger.debug("Deleted message: %s", deleted_message.id)
-
-    logger.info("Completed")
+    # if args.command == "init":
+    #     run_init()
+    #     return
 
 
 # Create a vector store caled "Financial Statements"
@@ -103,37 +79,3 @@ if matches:
         else:
             print("No match found.")
 """
-
-
-def run_thread():
-    """
-    Run the thread and poll the status of the run until it's in a terminal state.
-    Do this after adding a message to the thread.
-    """
-
-    # Get thread by id
-    thread = client.beta.threads.retrieve(THREAD_ID)
-
-    # Use the create and poll SDK helper to create a run and poll the status of
-    # the run until it's in a terminal state.
-    run = client.beta.threads.runs.create_and_poll(
-        thread_id=thread.id, assistant_id=ASSISTANT_ID
-    )
-
-    messages = list(
-        client.beta.threads.messages.list(thread_id=thread.id, run_id=run.id)
-    )
-
-    message_content = messages[0].content[0].text
-    annotations = message_content.annotations
-    citations = []
-    for index, annotation in enumerate(annotations):
-        message_content.value = message_content.value.replace(
-            annotation.text, f"[{index}]"
-        )
-        if file_citation := getattr(annotation, "file_citation", None):
-            cited_file = client.files.retrieve(file_citation.file_id)
-            citations.append(f"[{index}] {cited_file.filename}")
-
-            logger.debug(message_content.value)
-            logger.debug("\n".join(citations))
