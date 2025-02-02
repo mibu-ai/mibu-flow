@@ -18,8 +18,8 @@ const initialNodes = [
     { id: 'in-1', type: 'inputText', position: { x: 100, y: 100 }, data: {} },
     { id: 'in-2', type: 'inputText', position: { x: 100, y: 300 }, data: {} },
     { id: 'in-3', type: 'inputText', position: { x: 100, y: 500 }, data: {} },
-    { id: 'proc-1', type: 'processTextConcat', position: { x: 500, y: 150 }, data: { run: false, done: false } },
-    { id: 'proc-2', type: 'processTextConcat', position: { x: 500, y: 500 }, data: { run: false, done: false } },
+    { id: 'proc-1', type: 'processTextConcat', position: { x: 500, y: 150 }, data: { run: false } },
+    { id: 'proc-2', type: 'processTextConcat', position: { x: 500, y: 500 }, data: { run: false } },
     { id: 'out-1', type: 'outputText', position: { x: 900, y: 150 }, data: {} },
 ];
 
@@ -46,7 +46,20 @@ function EditorChild() {
     const { screenToFlowPosition } = useReactFlow();
     const [type] = useDnD();
 
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, markerEnd: { type: 'arrow' } }, eds)), [setEdges]);
+    useEffect(() => {
+        console.log('Edges:', edges);
+    }, [edges]);
+
+    const onConnect = useCallback((params) => {
+        setEdges((eds) => {
+            const sourceNode = nodes.find(node => node.id === params.source);
+            const newEdge = {
+                ...params,
+                data: { ...params.data, ...sourceNode?.data },
+            };
+            return addEdge(newEdge, eds);
+        });
+    }, [setEdges, nodes]);
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
