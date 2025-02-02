@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useDnD } from '../context/DnDContext';
 
 export default function Sidebar() {
+    const [_, setType] = useDnD();
     const [isOpen, setIsOpen] = useState(false);
+
+    const onDragStart = (event, nodeType) => {
+        setType(nodeType);
+        event.dataTransfer.effectAllowed = 'move';
+    };
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -18,8 +25,25 @@ export default function Sidebar() {
             <div className='flex relative w-full h-5/6 bg-white rounded-xl border border-custom-border shadow-lg'>
                 <div className="p-4">
                     <div className='w-[350px] flex justify-center items-center gap-4'>
-                        <input className="w-full text-custom-gray px-3 py-1 rounded-lg border border-2" placeholder='search' type="Search" />
-                        <p className='hover:opacity-[80%] active:opacity-[60%] text-custom-gray text-xl'>x</p>
+
+                        <div className='flex flex-col w-full gap-4'>
+                            <div className='flex w-full'>
+                                <input className="w-full text-custom-gray px-3 py-1 rounded-lg border border-2" placeholder='search' type="Search" />
+                                <p className='hover:opacity-[80%] active:opacity-[60%] text-custom-gray text-xl'>x</p>
+                            </div>
+
+                            <div className="text-2xl font-bold">Nodes</div>
+                            <div className="dndnode input" onDragStart={(event) => onDragStart(event, 'inputText')} draggable>
+                                Input Node
+                            </div>
+                            <div className="dndnode" onDragStart={(event) => onDragStart(event, 'processTextConcat')} draggable>
+                                Default Node
+                            </div>
+                            <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'outputText')} draggable>
+                                Output Node
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 

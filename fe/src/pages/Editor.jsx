@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
-import { ReactFlow, useNodesState, useEdgesState, addEdge, Background, useReactFlow } from '@xyflow/react';
+import { useCallback, useState, useRef } from 'react';
+import { ReactFlow, useNodesState, useEdgesState, addEdge, Background, useReactFlow, ReactFlowProvider, Controls } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import Sidebar from '../components/Sidebar';
@@ -7,6 +7,7 @@ import Automate from '../components/Automate';
 import HomeElement from '../components/HomeElement';
 import FlowBar from '../components/FlowBar';
 import Footer from '../components/Footer';
+import { DnDProvider, useDnD } from '../context/DnDContext';
 
 import InputText from '../components/nodes/input/InputText';
 import ProcessTextConcat from '../components/nodes/process/ProcessTextConcat';
@@ -22,6 +23,9 @@ const initialNodes = [
     { id: 'out-1', type: 'outputText', position: { x: 900, y: 150 }, data: {} },
 ];
 
+let id = 0;
+const getId = () => `dndnode_${id++}`;
+
 const initialEdges = [
     { id: 'e1-3', source: 'in-1', targetHandle: 'a', target: 'proc-1' },
     { id: 'e2-3', source: 'in-2', targetHandle: 'b', target: 'proc-1' },
@@ -35,23 +39,59 @@ const nodeTypes = {
     outputText: OutputText,
 };
 
-export default function Editor() {
+function EditorChild() {
+    const reactFlowWrapper = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const { screenToFlowPosition } = useReactFlow();
+    const [type] = useDnD();
 
     const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+
+    const onDragOver = useCallback((event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    }, []);
+
+    const onDrop = useCallback(
+        (event) => {
+            event.preventDefault();
+
+            // check if the dropped element is valid
+            if (!type) {
+                return;
+            }
+
+            // project was renamed to screenToFlowPosition
+            // and you don't need to subtract the reactFlowBounds.left/top anymore
+            // details: https://reactflow.dev/whats-new/2023-11-10
+            const position = screenToFlowPosition({
+                x: event.clientX,
+                y: event.clientY,
+            });
+            const newNode = {
+                id: getId(),
+                type,
+                position,
+                data: { label: `${type} node` },
+            };
+
+            setNodes((nds) => nds.concat(newNode));
+        },
+        [screenToFlowPosition, type],
+    );
 
     const runComputation = () => {
         console.log('Running computation');
         setNodes((nds) =>
             nds.map((node) => {
-            if (node.type.includes('process')) {
-                return {
-                ...node,
-                data: { ...node.data, run: true },
-                };
-            }
-            return node;
+                if (node.type.includes('process')) {
+                    return {
+                        ...node,
+                        data: { ...node.data, run: true },
+                    };
+                }
+                return node;
             })
         );
     };
@@ -72,20 +112,35 @@ export default function Editor() {
             </div>
 
             <Sidebar />
-
-            <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                nodeTypes={nodeTypes}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                style={{ width: '100%', height: '100%' }}
-            >
-                <Background variant="dots" gap={12} size={1} />
-            </ReactFlow>
+            <div className="w-full h-full" ref={reactFlowWrapper}>
+                <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    nodeTypes={nodeTypes}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onConnect={onConnect}
+                    onDrop={onDrop}
+                    onDragOver={onDragOver}
+                    fitView
+                    style={{ width: '100%', height: '100%' }}
+                >
+                    <Controls />
+                    <Background variant="dots" gap={12} size={1} />
+                </ReactFlow>
+            </div>
             <Footer />
 
         </div>
+    );
+}
+
+export default function Editor() {
+    return (
+        <ReactFlowProvider>
+            <DnDProvider>
+                <EditorChild />
+            </DnDProvider>
+        </ReactFlowProvider>
     );
 }
