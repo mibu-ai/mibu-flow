@@ -1,17 +1,22 @@
 import React, { useEffect } from 'react';
 import { Handle, Position, useReactFlow, useNodeConnections, useNodesData } from '@xyflow/react';
-import { use } from 'react';
 
 const OutputText = ({ id, data }) => {
     const { updateNodeData, getEdges, updateEdgeData } = useReactFlow();
     const inEdges = getEdges().filter(edge => edge.target === id);
 
+    console.log('Output Text Node:', id);
+
     useEffect(() => {
+        const allDone = inEdges.every((edge) => edge?.data?.done);
+        console.log("in edges", inEdges, "all done", allDone);
+        if (!allDone) return;
+
         if (inEdges.length) {
             const inputTexts = inEdges[0].data.text;
-            updateNodeData(id, { text: inputTexts });
+            updateNodeData(id, { ...data, text: inputTexts });
         }
-    }, [inEdges]);
+    }, [data.run, nodesData]);
 
     return (
         <div className="p-4 bg-blue-100 border rounded shadow">
