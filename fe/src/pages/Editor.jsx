@@ -35,6 +35,7 @@ const initialEdges = [
 ];
 
 
+
 const nodeTypes = {
     inputText: InputText,
     processTextConcat: ProcessTextConcat,
@@ -44,16 +45,41 @@ const nodeTypes = {
     saveTxt: SaveTxt,
 };
 
+const flowKey = 'example-flow';
+
 function EditorChild() {
     const reactFlowWrapper = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-    const { screenToFlowPosition } = useReactFlow();
+    const [rfInstance, setRfInstance] = useState(null);
+    const { screenToFlowPosition, setViewport} = useReactFlow();
     const [type] = useDnD();
 
     useEffect(() => {
         console.log('Edges:', edges);
     }, [edges]);
+
+    const onSave = useCallback(() => {
+        if (rfInstance) {
+          const flow = rfInstance.toObject();
+          localStorage.setItem(flowKey, JSON.stringify(flow));
+        }
+      }, [rfInstance]);
+
+    const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+        const flow = JSON.parse(localStorage.getItem(flowKey));
+    
+        if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        setViewport({ x, y, zoom });
+        }
+    };
+     
+    restoreFlow();
+    }, [setNodes, setViewport]);
 
     const onConnect = useCallback((params) => {
         setEdges((eds) => {
@@ -121,10 +147,10 @@ function EditorChild() {
 
                 <div className='px-3' />
 
-                <FlowBar />
+                <FlowBar onClick={onSave} />
 
                 <div className='flex flex-grow justify-end'>
-                    <Automate onClick={runComputation} />
+                    <Automate onClick={runComputation} onClick2={onRestore}/>
                 </div>
 
             </div>
@@ -141,6 +167,7 @@ function EditorChild() {
                     onDrop={onDrop}
                     onDragOver={onDragOver}
                     fitView
+                    onInit={setRfInstance}
                     style={{ width: '100%', height: '100%' }}
                 >
                     <Controls />

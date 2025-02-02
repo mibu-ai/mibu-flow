@@ -15,7 +15,7 @@ const SignIn = () => {
         if (user || userJson) {
             toast.info('Sign in successful!', { autoClose: 2000 });
             setTimeout(() => {
-                window.location.href = '/edit';
+                window.location.href = '/dashboard';
             }, 2000);
         } else {
             setError('Invalid username or password');

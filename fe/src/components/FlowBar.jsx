@@ -1,7 +1,7 @@
 import ShareBtn from "./buttons/ShareBtn";
 import { useState, useEffect, useRef } from "react";
 
-const FlowBar = () => {
+const FlowBar = ({ onClick }) => {
     const [isEditable, setIsEditable] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const inputValueRef = useRef();
@@ -75,7 +75,7 @@ const FlowBar = () => {
                 </div>
                 <div className="h-10 w-[2px] bg-custom-border mx-4 ml-36"></div>
                 <div className="w-[170px]">
-                    <ShareBtn />
+                    <ShareBtn onClick={onClick}/>
                 </div>
             </div>
         </>
