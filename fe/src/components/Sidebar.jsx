@@ -5,6 +5,7 @@ import { useDnD } from '../context/DnDContext';
 export default function Sidebar() {
     const [, setType] = useDnD();
     const [isOpen, setIsOpen] = useState(false);
+    const [search, setSearch] = useState('');
 
     const onDragStart = (event, nodeType) => {
         setType(nodeType);
@@ -14,6 +15,22 @@ export default function Sidebar() {
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+
+    const dragNode = (title, var_name) => {
+        console.log('dragging node');
+        
+        return (
+            <div className="dndnode" onDragStart={(event) => onDragStart(event, var_name)} draggable>
+                {title}
+            </div>
+        );
+    };
+
+    const nodes = [
+        { title: 'Input Node', var_name: 'inputText' },
+        { title: 'Text Concatenation Node', var_name: 'processTextConcat' },
+        { title: 'Output Node', var_name: 'outputText' },
+    ];
 
     return (
         <motion.div
@@ -28,18 +45,22 @@ export default function Sidebar() {
 
                         <div className='flex flex-col w-full gap-4'>
                             <div className='flex w-full'>
-                                <input className="w-full text-custom-gray px-3 py-1 rounded-lg border border-2" placeholder='search' type="Search" />
+                                <input 
+                                    className="w-full text-custom-gray px-3 py-1 rounded-lg border border-2" placeholder='search' type="Search" 
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
                             </div>
 
                             <div className="text-2xl font-bold">Nodes</div>
-                            <div className="dndnode input" onDragStart={(event) => onDragStart(event, 'inputText')} draggable>
-                                Input Node
-                            </div>
-                            <div className="dndnode" onDragStart={(event) => onDragStart(event, 'processTextConcat')} draggable>
-                                Default Node
-                            </div>
-                            <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'outputText')} draggable>
-                                Output Node
+                            
+                            <div className='flex flex-col gap-4'>
+                                {nodes
+                                    .filter((node) => 
+                                        node.title.toLowerCase().includes(search.toLowerCase()) || 
+                                        node.var_name.toLowerCase().includes(search.toLowerCase())
+                                    )
+                                    .map((node) => dragNode(node.title, node.var_name))}
                             </div>
 
                         </div>
