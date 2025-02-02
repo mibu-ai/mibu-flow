@@ -56,6 +56,7 @@ def upload_file():
     job_id = uuid.uuid4().hex
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], job_id + ".pdf")
     file.save(filepath)
+    file.close()  # Close the file after saving it
 
     # Parse the file
     thread = threading.Thread(
@@ -77,3 +78,6 @@ def run_up():
     Start the Mibu Flow Backend API
     """
     app.run(debug=True)
+
+if __name__ == "__main__":
+    run_up()
