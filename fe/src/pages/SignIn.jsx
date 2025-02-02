@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import usersData from '../data/users.json';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignIn = () => {
     const [username, setUsername] = useState('');
@@ -11,8 +13,10 @@ const SignIn = () => {
         const userJson = usersData?.users.find(user => user.username === username && user.password === password);
         const user = storedUsersData?.users.find(user => user.username === username && user.password === password);
         if (user || userJson) {
-            alert('Sign in successful!');
-            window.location.href = '/edit';
+            toast.info('Sign in successful!');
+            setTimeout(() => {
+                window.location.href = '/edit';
+            }, 2000);
         } else {
             setError('Invalid username or password');
         }
@@ -43,6 +47,7 @@ const SignIn = () => {
                 </div>
                 {error && <p style={{color: 'red'}}>{error}</p>}
                 <button className="border border-2 border-custom-blue rounded-xl" type="submit">Sign In</button>
+                <ToastContainer />
             </form>
         </div>
     );

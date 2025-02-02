@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import usersData from '../data/users.json';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
     const [username, setUsername] = useState('');
@@ -12,14 +14,22 @@ const SignUp = () => {
         const userExists = usersData.users.find(user => user.username === username);
         if (userExists) {
             setError('Username already exists');
-            window.location.href = '/signin';
+            toast.info('User already exists');
+
+            
+            setTimeout(() => {
+                window.location.href = '/signin';
+            }, 2000);
         } else {
             const newUser = { username, password };
             usersData.users.push(newUser);
             // Assuming you have a function to save the updated usersData to the JSON file
             saveUsersData(usersData);
-            alert('User created successfully!');
-            window.location.href = '/signin';
+            toast.info('User created successfully!');
+            setTimeout(() => {
+                window.location.href = '/signin';
+            }, 2000);
+
         }
     };
 
@@ -53,6 +63,7 @@ const SignUp = () => {
                 {error && <p style={{color: 'red'}}>{error}</p>}
                 <button className="border border-2 border-custom-blue rounded-xl" type="submit">Sign Up</button>
             </form>
+            <ToastContainer />
         </div>
     );
 };
