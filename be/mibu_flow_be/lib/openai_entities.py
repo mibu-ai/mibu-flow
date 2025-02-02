@@ -25,7 +25,8 @@ def create_assistant() -> str:
     assistant = client.beta.assistants.create(
         name="Financial Analyst Assistant",
         instructions="You are a personal bank statement PDF parser",
-        model="gpt-4o",
+        # model="gpt-4o",
+        model="gpt-4-turbo",
         tools=[{"type": "file_search"}],
     )
 

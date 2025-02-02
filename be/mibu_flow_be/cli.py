@@ -8,9 +8,9 @@ from mibu_flow_be.lib.openai_entities import client, add_to_thread
 from mibu_flow_be.lib.logger import logger
 from mibu_flow_be.utils.initialize import run_init
 
-FILENAME = "statement.pdf"
-ASSISTANT_ID = "asst_0CWOX0xJEixMQQjIt5WkxyHv"
-THREAD_ID = "thread_1J2fUIxjWntDnOSm4LcYJSFO"
+FILENAME = "statements/statement3.pdf"
+ASSISTANT_ID = "asst_A3cCpIgrypZGoSm5cSdEfEX7"
+THREAD_ID = "thread_088CzAkYwh5Ly6XGVsuaYafs"
 
 
 def main():
@@ -24,6 +24,13 @@ def main():
     if args.command == "init":
         run_init()
         return
+
+    logger.debug(
+        "Using resources:\n- assistant: %s\n- thread: %s\n- statement: %s",
+        ASSISTANT_ID,
+        THREAD_ID,
+        FILENAME,
+    )
 
     # Create file
     message_file = client.files.create(file=open(FILENAME, "rb"), purpose="assistants")
