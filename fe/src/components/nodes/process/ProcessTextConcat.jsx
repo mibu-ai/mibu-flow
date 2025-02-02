@@ -3,7 +3,7 @@ import { Handle, Position, useReactFlow, useNodeConnections, useNodesData, useEd
 
 // hi
 const ProcessTextConcat = ({ id, data }) => {
-    const connections = useHandleConnections({
+    const connections = useNodeConnections({
         type: 'target',
     });
     const nodesData = useNodesData((connections || []).map((c) => c.source));
