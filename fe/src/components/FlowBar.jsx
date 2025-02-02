@@ -74,7 +74,7 @@ const FlowBar = () => {
                     </svg>
                 </div>
                 <div className="h-10 w-[2px] bg-custom-border mx-4 ml-36"></div>
-                <div className="w-[140px]">
+                <div className="w-[170px]">
                     <ShareBtn />
                 </div>
             </div>
