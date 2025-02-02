@@ -16,9 +16,7 @@ export default function Sidebar() {
         setIsOpen(!isOpen);
     };
 
-    const dragNode = (title, var_name) => {
-        console.log('dragging node');
-        
+    const dragNode = (title, var_name) => {        
         return (
             <div className="dndnode" onDragStart={(event) => onDragStart(event, var_name)} draggable>
                 {title}
