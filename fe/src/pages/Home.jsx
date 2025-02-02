@@ -4,9 +4,9 @@ import GetStartedBtn from '../components/buttons/GetStartedBtn';
 export default function Home() {
     return (
         <div className="h-screen w-screen bg-custom-bg bg-cover bg-center flex flex-col items-center justify-center">
-            <div className='absolute top-10 right-10'>
+            {/* <div className='absolute top-5 right-5'>
                 <Automate />
-            </div>
+            </div> */}
             <div className='absolute font-harabara top-60 left-[330px]'>
                 <SplitText
                 text="Mibu Flow"

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useDnD } from '../context/DnDContext';
 
 export default function Sidebar() {
-    const [_, setType] = useDnD();
+    const [, setType] = useDnD();
     const [isOpen, setIsOpen] = useState(false);
 
     const onDragStart = (event, nodeType) => {
@@ -29,7 +29,6 @@ export default function Sidebar() {
                         <div className='flex flex-col w-full gap-4'>
                             <div className='flex w-full'>
                                 <input className="w-full text-custom-gray px-3 py-1 rounded-lg border border-2" placeholder='search' type="Search" />
-                                <p className='hover:opacity-[80%] active:opacity-[60%] text-custom-gray text-xl'>x</p>
                             </div>
 
                             <div className="text-2xl font-bold">Nodes</div>
