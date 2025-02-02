@@ -30,6 +30,7 @@ export default function Sidebar() {
         { title: 'Input Node', var_name: 'inputText' },
         { title: 'Text Concatenation Node', var_name: 'processTextConcat' },
         { title: 'Output Node', var_name: 'outputText' },
+        { title: 'Bank File Node', var_name: 'fileInput' },
     ];
 
     return (

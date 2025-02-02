@@ -1,32 +1,18 @@
 import { FileUploader } from "react-drag-drop-files";
-import { useEffect, useState } from "react";
-import { uploadFile } from "../fetch/EditorFetch";
+import { useFileUpload } from "../FileUploadContext"; // path may vary
 
 const fileTypes = ["PDF"];
 
-function DragDrop() {
-  const [file, setFile] = useState(null);
+function FileUpload() {
+  const { setFile } = useFileUpload();
+
   const handleChange = (file) => {
     setFile(file);
   };
 
-  useEffect(() => {
-    async function parseFile() {
-      if (file) {
-        const res = await uploadFile(file);
-        console.log(res);
-      }
-    }
-
-    parseFile();
-  }, [file]);
-
   return (
-    <>
-      <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
-      <h2>hello</h2>
-    </>
+    <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
   );
 }
 
-export default DragDrop;
+export default FileUpload;

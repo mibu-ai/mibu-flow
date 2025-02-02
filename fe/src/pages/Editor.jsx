@@ -12,6 +12,7 @@ import { DnDProvider, useDnD } from '../context/DnDContext';
 import InputText from '../components/nodes/input/InputText';
 import ProcessTextConcat from '../components/nodes/process/ProcessTextConcat';
 import OutputText from '../components/nodes/output/OutputText';
+import BankFile from '../components/nodes/input/BankFIle';
 
 // run: ready for the process to run, done: process has finished running.
 const initialNodes = [
@@ -37,6 +38,7 @@ const nodeTypes = {
     inputText: InputText,
     processTextConcat: ProcessTextConcat,
     outputText: OutputText,
+    fileInput: BankFile,
 };
 
 function EditorChild() {

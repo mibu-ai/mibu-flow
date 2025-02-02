@@ -8,5 +8,5 @@ THREAD_ID = "thread_088CzAkYwh5Ly6XGVsuaYafs"
 ASSISTANT_ID = "asst_dvbIGLwtP08WRvSK43edEctl"  # gpt-4o-mini
 
 # API
-UPLOAD_FOLDER = "/Users/james/Documents/GitHub/mibu-flow/be/tmp"
+UPLOAD_FOLDER = r"C:\Users\Pengu\Desktop\mibu flow"
 ALLOWED_EXTENSIONS = {"pdf"}
