@@ -46,7 +46,7 @@ function EditorChild() {
     const { screenToFlowPosition } = useReactFlow();
     const [type] = useDnD();
 
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+    const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, markerEnd: { type: 'arrow' } }, eds)), [setEdges]);
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
