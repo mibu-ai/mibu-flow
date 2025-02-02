@@ -77,3 +77,6 @@ def run_up():
     Start the Mibu Flow Backend API
     """
     app.run(debug=True)
+
+if __name__ == "__main__":
+    run_up()
