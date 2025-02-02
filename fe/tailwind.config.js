@@ -9,6 +9,7 @@ export default {
             colors: {
                 'custom-blue': '#6A94FF',
                 'custom-border': '#E6E6E6',
+                'custom-gray': '#4B4B4B',
             },
             fontFamily: {
                 poppins: ['Poppins', 'sans-serif'],
